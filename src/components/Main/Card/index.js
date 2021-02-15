@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import store from '../../../store'
 import { useDispatch, useSelector } from 'react-redux';
 import {domain, pageLimit} from '../../../constants'
-import { favoriteIncrement, favoriteDecrement, fetchPlayersData } from '../../../store/index'
+import { favoriteIncrement, favoriteDecrement } from '../../../store/index'
 import { Container, SubContainer, Name, PlayerImg, Team, Favorite, FavoriteRemove, EditButton, Button, Spinner } from "./styles";
 
 
@@ -31,6 +31,7 @@ const Card = ({getFavoriteData, cardsFor}) => {
 		if(filteredData.length > 0) {
 			setPlayerState(filteredData)
 		} 
+		
 	})
 
 	useEffect(() => {
@@ -60,11 +61,9 @@ const Card = ({getFavoriteData, cardsFor}) => {
 			}
 		})
 
-		
 		setPlayerState([...playerState, ...playerData])
 		setFavoritePlayers(favoriteData)
 		setPlayerLoad(playerLoad + 1)	
-		
 	}
 	
 	// Toggle Favorite and POST to: /favorites
@@ -74,7 +73,7 @@ const Card = ({getFavoriteData, cardsFor}) => {
 		const favTarget = Number(event.target.getAttribute('data-id'))
 		const foundPlayer = combinedArr.find(element => element.id === favTarget)
 		foundPlayer.favorite = !foundPlayer.favorite
-
+		
 		if(foundPlayer.favorite === true) {
 			postFavorite(foundPlayer)
 			dispatch(favoriteIncrement())
@@ -87,6 +86,7 @@ const Card = ({getFavoriteData, cardsFor}) => {
 		
 	}
 	
+	// POST Favorites
 	const postFavorite = async (foundPlayer) => {
 		const postSettings = {
 			method: "POST",
@@ -105,6 +105,7 @@ const Card = ({getFavoriteData, cardsFor}) => {
 		}
 	}
 
+	// DELETE Favorites
 	const deleteFavorite = async (foundPlayer) => {
 		const postSettings = {
 			method: "DELETE"	
@@ -127,11 +128,13 @@ const Card = ({getFavoriteData, cardsFor}) => {
 		console.log(editPlayerTarget)
 	}
 	
+	// Set Fetching State to load more players
 	const handleScroll = () => {
 		if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight) return;
 		setIsFetching(true);
 	}
 
+	// Fetch more players
 	const getMorePlayers = async () => {
 		fetchData()
 		setIsFetching(false);

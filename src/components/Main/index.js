@@ -1,7 +1,6 @@
 import React, {lazy, Suspense, useEffect} from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import Search from "./Search";
-// import Card from "./Card";
 import { Container, Title, SubContainer, FavoriteCounter, Spinner, RightArrow} from "./styles";
 import {
   BrowserRouter as Router,
@@ -11,6 +10,7 @@ import {
 } from "react-router-dom";
 import { fetchFavoriteData, getFavoriteTotal } from "../../store";
 
+// React Lazy import components
 const Card = lazy(() => import("./Card"))
 const FavoritePlayers = lazy(() => import("./FavoritePlayers"))
 
@@ -20,6 +20,7 @@ const Main = () => {
     getFavoriteData()
   }, [dispatch])
 
+  // Dispatch for Favorite Counter
   const getFavoriteData = () => {
     fetch('http://localhost:3008/favorites')
     .then(res => res.json())

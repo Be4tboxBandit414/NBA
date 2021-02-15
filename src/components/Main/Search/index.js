@@ -1,5 +1,4 @@
 import React from "react";
-import store from '../../../store'
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFilteredPlayers } from '../../../store/index'
 import {domain} from "../../../constants"

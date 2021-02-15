@@ -13,6 +13,8 @@ export const Title = styled.p`
 	padding-bottom: 32px;
  	text-align: center;
 	color: #FFFFFF;
+	font-family: 'Anton', sans-serif;
+	
 `
 
 export const SubContainer = styled.div `
@@ -21,24 +23,24 @@ export const SubContainer = styled.div `
 
 export const FavoriteCounter = styled(Link)`
 	position: absolute;
-	top: 15.75rem;
+	top: 17.75rem;
 	right: 11rem;
     font-weight: 600;
     font-size: 25px;
 	color: #FFFFFF;
 	text-decoration: none;
-	@media (max-width: 768px) {
-		left: 2rem;
+	@media (max-width: 1100px) {
+		top: 13rem;
 	}
 `
 
 export const RightArrow = styled(RightArrowCircle)`
 	position: absolute;
-	top: 15rem;
+	top: 17rem;
 	right: 18.85rem;
 	color: #FFFFFF;
-	@media (max-width: 768px) {
-		left: 1rem;
+	@media (max-width: 1100px) {
+		top: 12rem;
 	}
 `
 

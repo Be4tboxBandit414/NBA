@@ -55,9 +55,6 @@ export const Favorite = styled(PlusCircle)`
 	cursor: pointer;
 	float: right;
 	pointer-events: none;
-    // position: relative;
-    // right: 0;
-    // bottom: 6.5rem;
 `
 
 export const FavoriteRemove = styled(MinusCircle)`
@@ -70,9 +67,6 @@ export const FavoriteRemove = styled(MinusCircle)`
 	cursor: pointer;
 	float: right;
 	pointer-events: none;
-    // position: relative;
-    // right: 0;
-    // bottom: 6.5rem;
 `
 
 export const EditButton = styled(Edit)`

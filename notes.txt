@@ -2,3 +2,42 @@ Please feel free to leave any notes here on anything you may have done
 differently or anything you might have implemented if you had more time!
 
 ------------------------------- NOTES ----------------------------------
+
+Summary:
+
+It was a very enjoyable technical experience! I had a lot of fun playing around
+with what was available and creating this application! Given the 4 hours, I first
+assessed what were the high impact items I could deliver, what deliverables were
+the most imperative, and what kind of product could lend itself to be a minimum
+viable product. I did a walkthrough of the code provided and made notes of the
+architecture and worked out a flow for my intended application. It was my belief
+that I could create good lazy load of the paginated results, a filter on search, 
+favoriting and unfavoriting, and routing to the favorite page was the best way 
+to make use of the 4 hours.
+
+Functionalities and UX:
+ - The application lazy loads 10 results at a time on scroll to the bottom until 
+ the end of the data. 
+
+ - It will filter on search and present the resultcards. 
+ 
+ - Every result can be favorited by the add button on each Card and subsequently 
+ can be removed by the  toggled subtract button. These actions will increase or 
+ decrease the favorite  counter. The button to the left of the favorite counter 
+ and the counter itself will route to the favorite page and display only 
+ favorited players. Removing the  favorited player will remove them from the page. 
+ A back button is provided to bring the user back to the home page. Players are sorted
+ by favorite.
+
+ - All favorite items are persisted in the json-server
+ 
+ - There is an edit button to show what the UI could look like, but no functionality 
+ was added beyond a log to the console.
+
+Wish to improve on if given more time:
+1. A small clear all button functionality via 'x' for the filter search
+2. A sticky navigation bar with search on scroll down of the results
+3. Background of players be given their team's logo and colors
+4. Sort so favorites are moved to the top of the application
+5. Edit player attributes with a modal form 
+6. Drag and Drop the cards to sort

@@ -1,6 +1,4 @@
-import React, {lazy, Suspense, useEffect} from 'react'
-import { useSelector, useDispatch } from 'react-redux';
-import store from '../../../store'
+import React, {lazy, Suspense} from 'react'
 import {BackButton, Spinner} from './styles'
 import { useHistory } from "react-router-dom";
 
