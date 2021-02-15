@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import store from '../../../store'
 import { useDispatch, useSelector } from 'react-redux';
 import {domain, pageLimit} from '../../../constants'
-import { favoriteIncrement, favoriteDecrement, fetchFavoriteData } from '../../../store/index'
+import { favoriteIncrement, favoriteDecrement, fetchPlayersData } from '../../../store/index'
 import { Container, SubContainer, Name, PlayerImg, Team, Favorite, FavoriteRemove, EditButton, Button, Spinner } from "./styles";
 
 
@@ -13,8 +13,8 @@ const Card = ({getFavoriteData, cardsFor}) => {
 	const [playerLoad, setPlayerLoad] = useState(1)
 	const [favoritePlayers, setFavoritePlayers] = useState([])
 
-	const favorteStore = useSelector(state => state.favoriteObj.favorite)
-	console.log(favorteStore)
+	// Get Filtered Search Player from Store
+	const filteredData = useSelector(state => state.players)
 
 	// Dispatch to Store
 	const dispatch = useDispatch()
@@ -28,7 +28,10 @@ const Card = ({getFavoriteData, cardsFor}) => {
 
 	useEffect(() => {
 		getFavoriteData()
-	}, [isFetching])
+		if(filteredData.length > 0) {
+			setPlayerState(filteredData)
+		} 
+	})
 
 	useEffect(() => {
 		if (!isFetching) return;
@@ -40,11 +43,7 @@ const Card = ({getFavoriteData, cardsFor}) => {
 		const teamRes = await fetch(`${domain}/teams`)
 		const teamData = await teamRes.json()
 		const playerRes = await fetch(`${domain}/players?_page=${playerLoad}&_limit=${pageLimit}`)
-		// const playerRes = await fetch(`${domain}/players`)
 		const playerData = await playerRes.json()
-		// const favoriteRes = await fetch(`${domain}/favorites`)
-		// const favoriteData = await favoriteRes.json()
-
 		const favoriteData = store.getState().favoriteObj.favorite
 	
 		playerData.forEach(player => {
@@ -61,36 +60,31 @@ const Card = ({getFavoriteData, cardsFor}) => {
 			}
 		})
 
-		// dispatch(fetchFavoriteData(playerData))
+		
 		setPlayerState([...playerState, ...playerData])
 		setFavoritePlayers(favoriteData)
-		setPlayerLoad(playerLoad + 1)		
+		setPlayerLoad(playerLoad + 1)	
+		
 	}
 	
 	// Toggle Favorite and POST to: /favorites
 	const toggleFavorite = (event) => {
 		event.preventDefault()
-		let playersCopy = [...playerState]
-		console.log(playersCopy)
-		let favoriteArr = [...favoritePlayers]
-	
+		let combinedArr = [...playerState, ...favoritePlayers]
 		const favTarget = Number(event.target.getAttribute('data-id'))
-		const foundPlayer = playersCopy.find(element => element.id === favTarget)
+		const foundPlayer = combinedArr.find(element => element.id === favTarget)
 		foundPlayer.favorite = !foundPlayer.favorite
 
-		if(foundPlayer.favorite === true) favoriteArr.push(foundPlayer)
-
-		// favoriteArr = playersCopy.filter(player => player.favorite === true)
-		setFavoritePlayers([...favoriteArr])
-		setPlayerState([...playersCopy])
-
-		foundPlayer.favorite ? dispatch(favoriteIncrement()) : dispatch(favoriteDecrement())
-		
 		if(foundPlayer.favorite === true) {
 			postFavorite(foundPlayer)
+			dispatch(favoriteIncrement())
 		} else {
 			deleteFavorite(foundPlayer)
+			dispatch(favoriteDecrement())
+			fetchData()
 		}
+
+		
 	}
 	
 	const postFavorite = async (foundPlayer) => {
@@ -138,14 +132,18 @@ const Card = ({getFavoriteData, cardsFor}) => {
 		setIsFetching(true);
 	}
 
-	const getMorePlayers = () => {
+	const getMorePlayers = async () => {
 		fetchData()
 		setIsFetching(false);
 	}
 
 
+
 	// Will render component depending on cardsFor prop: 'home' or 'favorite'
-	const renderSwitch = location => {
+	const renderSwitch = (location) => {
+		const filterArr = [...favoritePlayers]
+		const filterFavorite =  filterArr.filter(player => player.favorite === true)
+
 		switch(location) {
 			case 'home':
 			return(
@@ -171,7 +169,7 @@ const Card = ({getFavoriteData, cardsFor}) => {
 			)	
 			case 'favorite': 
 				return(
-					favoritePlayers.map(player => (
+					filterFavorite.map(player => (
 						<Container key={player.id}>
 							<SubContainer>
 								<Name name={player.name}>{player.name}</Name>

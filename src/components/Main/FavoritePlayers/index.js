@@ -1,4 +1,4 @@
-import React, {lazy, Suspense} from 'react'
+import React, {lazy, Suspense, useEffect} from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import store from '../../../store'
 import {BackButton, Spinner} from './styles'
@@ -8,7 +8,7 @@ const Card = lazy(() => import("../Card/index"))
 
 const FavoritePlayers = ({getFavoriteData}) => {
     let history = useHistory()
-    
+
     return (
         <>
             <BackButton size="30" onClick={() => history.goBack()}/>

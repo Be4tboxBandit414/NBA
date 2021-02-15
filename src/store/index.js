@@ -1,5 +1,18 @@
 import { createStore, combineReducers } from "redux";
 
+//Fetch filtered players from API on Success 
+export const fetchFilteredPlayers = (playerData) => ({
+    type: "FETCH_FILTERED_DATA",
+    payload: playerData
+})
+
+
+// Fetch paginated players from API on Success 
+export const fetchPlayersData = (playerData) => ({
+    type: "FETCH_PLAYERS_DATA",
+    payload: playerData
+})
+
 // Favorite Data from API on Success
 
 export const fetchFavoriteData = (playerData) => ({
@@ -33,6 +46,20 @@ const initialState = {
     favoriteCount: 0
 }
 
+// Paginated Players Reducer
+
+const getPlayers =(state = [], action) => {
+    switch(action.type) {
+        case 'FETCH_PLAYERS_DATA':
+            return [...action.payload]
+        case 'FETCH_FILTERED_DATA':
+            return [...action.payload]
+        default:
+            return state
+    }
+}
+
+
 // Favorite Reducer
 
 const favoriteCounter = (state = initialState, action) => {
@@ -63,7 +90,8 @@ const favoriteCounter = (state = initialState, action) => {
 }
 
 const combinedReducers = combineReducers({
-    favoriteObj: favoriteCounter
+    favoriteObj: favoriteCounter,
+    players: getPlayers
 });
 
 export default createStore(combinedReducers);
