@@ -8,8 +8,7 @@ const Card = lazy(() => import("../Card/index"))
 
 const FavoritePlayers = ({getFavoriteData}) => {
     let history = useHistory()
-    const favoriteArr = useSelector(state =>  state.favoriteObj.favorite)
-    console.log(favoriteArr)
+    
     return (
         <>
             <BackButton size="30" onClick={() => history.goBack()}/>

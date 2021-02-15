@@ -2,6 +2,7 @@ import styled from "styled-components";
 import {Edit} from "@styled-icons/boxicons-regular/Edit"
 import {PlusCircle} from "@styled-icons/boxicons-regular/PlusCircle"
 import {MinusCircle} from "@styled-icons/boxicons-regular/MinusCircle"
+import {Spinner3} from "@styled-icons/icomoon/Spinner3"
 
 export const Container = styled.div`
 	background-color: #f2f2f2;
@@ -79,4 +80,10 @@ export const EditButton = styled(Edit)`
 	padding-right: 15px;
     padding-top: 4px;
 	pointer-events: none;
+`
+
+export const Spinner = styled(Spinner3)`
+	position: absolute;
+	top: 50%;
+	left: 50%;
 `

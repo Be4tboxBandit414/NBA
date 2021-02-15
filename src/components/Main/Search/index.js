@@ -3,7 +3,7 @@ import { Container, SearchInput } from "./styles";
 
 const Search = () => (
 	<Container>
-		<SearchInput placeholder="Search..." />
+		<SearchInput name="term" placeholder="Search..." />
 	</Container>
 );
 

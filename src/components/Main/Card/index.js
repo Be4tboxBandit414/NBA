@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
 import store from '../../../store'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {domain, pageLimit} from '../../../constants'
-import { favoriteIncrement, favoriteDecrement } from '../../../store/index'
-import { Container, SubContainer, Name, PlayerImg, Team, Favorite, FavoriteRemove, EditButton, Button } from "./styles";
+import { favoriteIncrement, favoriteDecrement, fetchFavoriteData } from '../../../store/index'
+import { Container, SubContainer, Name, PlayerImg, Team, Favorite, FavoriteRemove, EditButton, Button, Spinner } from "./styles";
 
 
 const Card = ({getFavoriteData, cardsFor}) => {
 	// Local State to hold data; Check for pagination
+	const [isFetching, setIsFetching] = useState(false);
 	const [playerState, setPlayerState] = useState([])
 	const [playerLoad, setPlayerLoad] = useState(1)
-	const [favortePlayers, setFavoritePlayers] = useState([])
+	const [favoritePlayers, setFavoritePlayers] = useState([])
+
+	const favorteStore = useSelector(state => state.favoriteObj.favorite)
+	console.log(favorteStore)
 
 	// Dispatch to Store
 	const dispatch = useDispatch()
@@ -18,17 +22,25 @@ const Card = ({getFavoriteData, cardsFor}) => {
 	// useEffect for GET calls on load of Card component
 	useEffect(() => {
 		fetchData()
+		window.addEventListener('scroll', handleScroll)
+		return () => window.removeEventListener('scroll', handleScroll);
 	}, [])
 
 	useEffect(() => {
 		getFavoriteData()
-	}, [favortePlayers])
+	}, [isFetching])
+
+	useEffect(() => {
+		if (!isFetching) return;
+		getMorePlayers();
+	  }, [isFetching]);
 
 	// Fetches team data from endpoint: /teams; Fetches player data from endpoint: /players; Adds Favorite Key and default false as value
 	const fetchData = async () => {
 		const teamRes = await fetch(`${domain}/teams`)
 		const teamData = await teamRes.json()
 		const playerRes = await fetch(`${domain}/players?_page=${playerLoad}&_limit=${pageLimit}`)
+		// const playerRes = await fetch(`${domain}/players`)
 		const playerData = await playerRes.json()
 		// const favoriteRes = await fetch(`${domain}/favorites`)
 		// const favoriteData = await favoriteRes.json()
@@ -48,22 +60,28 @@ const Card = ({getFavoriteData, cardsFor}) => {
 				}
 			}
 		})
+
+		// dispatch(fetchFavoriteData(playerData))
 		setPlayerState([...playerState, ...playerData])
 		setFavoritePlayers(favoriteData)
-	
+		setPlayerLoad(playerLoad + 1)		
 	}
 	
 	// Toggle Favorite and POST to: /favorites
 	const toggleFavorite = (event) => {
+		event.preventDefault()
 		let playersCopy = [...playerState]
-		let favoriteArr = []
+		console.log(playersCopy)
+		let favoriteArr = [...favoritePlayers]
 	
 		const favTarget = Number(event.target.getAttribute('data-id'))
 		const foundPlayer = playersCopy.find(element => element.id === favTarget)
-		
 		foundPlayer.favorite = !foundPlayer.favorite
-		favoriteArr = playersCopy.filter(player => player.favorite === true)
-		setFavoritePlayers(favoriteArr)
+
+		if(foundPlayer.favorite === true) favoriteArr.push(foundPlayer)
+
+		// favoriteArr = playersCopy.filter(player => player.favorite === true)
+		setFavoritePlayers([...favoriteArr])
 		setPlayerState([...playersCopy])
 
 		foundPlayer.favorite ? dispatch(favoriteIncrement()) : dispatch(favoriteDecrement())
@@ -109,24 +127,22 @@ const Card = ({getFavoriteData, cardsFor}) => {
 
 	// Edit Player on Click
 	const editPlayer = (event) => {
+		event.preventDefault()
 		const editTarget = Number(event.target.getAttribute('data-id'))
 		const editPlayerTarget = playerState.find(element => element.id === editTarget)
 		console.log(editPlayerTarget)
 	}
 	
 	const handleScroll = () => {
-		if(window.innerHeight + window.scrollY >= document.body.clientHeight) {
-			try {
-				// fetchData()
-				console.log('fetching new data')
-			}
-			catch(err) {
-				console.error(err)
-			}
-		}
+		if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight) return;
+		setIsFetching(true);
 	}
 
- 	window.addEventListener('scroll', handleScroll)
+	const getMorePlayers = () => {
+		fetchData()
+		setIsFetching(false);
+	}
+
 
 	// Will render component depending on cardsFor prop: 'home' or 'favorite'
 	const renderSwitch = location => {
@@ -154,9 +170,8 @@ const Card = ({getFavoriteData, cardsFor}) => {
 				))
 			)	
 			case 'favorite': 
-				console.log('Favorite cards')
 				return(
-					favortePlayers.map(player => (
+					favoritePlayers.map(player => (
 						<Container key={player.id}>
 							<SubContainer>
 								<Name name={player.name}>{player.name}</Name>
@@ -184,6 +199,7 @@ const Card = ({getFavoriteData, cardsFor}) => {
 	return (
 		<>
 			{renderSwitch(cardsFor)}
+			{isFetching && <Spinner size="30"/>}
 		</>	
 	)
 }
