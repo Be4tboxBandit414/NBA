@@ -77,6 +77,7 @@ const Card = ({getFavoriteData, cardsFor}) => {
 		if(foundPlayer.favorite === true) {
 			postFavorite(foundPlayer)
 			dispatch(favoriteIncrement())
+			playerState.sort((a,b) => b.favorite - a.favorite)
 		} else {
 			deleteFavorite(foundPlayer)
 			dispatch(favoriteDecrement())
@@ -135,7 +136,7 @@ const Card = ({getFavoriteData, cardsFor}) => {
 	}
 
 	// Fetch more players
-	const getMorePlayers = async () => {
+	const getMorePlayers = () => {
 		fetchData()
 		setIsFetching(false);
 	}
@@ -147,50 +148,34 @@ const Card = ({getFavoriteData, cardsFor}) => {
 		const filterArr = [...favoritePlayers]
 		const filterFavorite =  filterArr.filter(player => player.favorite === true)
 
+		const renderContainer = player => (
+			<Container key={player.id}>
+				<SubContainer>
+					<Name name={player.name}>{player.name}</Name>
+					<Team>{player.team}</Team>
+				</SubContainer>
+				<PlayerImg src={`${domain}/${player.image}`} alt="player_image" />
+				<Button data-id={player.id} onClick={(event) => editPlayer(event)}>
+					<EditButton size="35"/>
+				</Button>
+				<Button data-id={player.id} onClick={(event) => toggleFavorite(event)}>
+					{player.favorite ?
+						<FavoriteRemove>-</FavoriteRemove>
+						:
+						<Favorite>+</Favorite>
+					}
+				</Button>
+			</Container>
+		)
+
 		switch(location) {
 			case 'home':
-			return(
-				playerState.map(player => (
-					<Container key={player.id}>
-						<SubContainer>
-							<Name name={player.name}>{player.name}</Name>
-							<Team>{player.team}</Team>
-						</SubContainer>
-						<PlayerImg src={`${domain}/${player.image}`} alt="player_image" />
-						<Button data-id={player.id} onClick={(event) => editPlayer(event)}>
-							<EditButton size="35"/>
-						</Button>
-						<Button data-id={player.id} onClick={(event) => toggleFavorite(event)}>
-							{player.favorite ?
-								<FavoriteRemove>-</FavoriteRemove>
-								:
-								<Favorite>+</Favorite>
-							}
-						</Button>
-					</Container>
-				))
-			)	
+				return (
+					playerState.map(player => renderContainer(player))
+				)	
 			case 'favorite': 
 				return(
-					filterFavorite.map(player => (
-						<Container key={player.id}>
-							<SubContainer>
-								<Name name={player.name}>{player.name}</Name>
-								<Team>{player.team}</Team>
-							</SubContainer>
-							<PlayerImg src={`${domain}/${player.image}`} alt="player_image" />
-							<Button data-id={player.id} onClick={(event) => editPlayer(event)}>
-								<EditButton size="35"/>
-							</Button>
-							<Button data-id={player.id} onClick={(event) => toggleFavorite(event)}>
-								{player.favorite ?
-									<FavoriteRemove>-</FavoriteRemove>
-									:
-									<Favorite>+</Favorite>
-								}
-							</Button>
-						</Container>
-					))
+					filterFavorite.map(player => renderContainer(player))
 				)
 			default: 
 				return;
