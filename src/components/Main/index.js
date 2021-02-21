@@ -20,18 +20,19 @@ const Main = () => {
     getFavoriteData()
   }, [dispatch])
 
-  // Dispatch for Favorite Counter
-  const getFavoriteData = () => {
-    fetch('http://localhost:3008/favorites')
-    .then(res => res.json())
-    .then(data => {
-      dispatch(fetchFavoriteData(data))
-      dispatch(getFavoriteTotal(data))
-    })
-  }
-  const favCounter = useSelector(state => state.favoriteObj.favoriteCount)
+// Dispatch for Favorite Counter
+const getFavoriteData = () => {
+  fetch('http://localhost:3008/favorites')
+  .then(res => res.json())
+  .then(data => {
+    dispatch(fetchFavoriteData(data))
+    dispatch(getFavoriteTotal(data))
+  })
+}
 
-  return (
+const favCounter = useSelector(state => state.favoriteObj.favoriteCount)
+
+return (
   <Router>
     <Container>
       <Title>NBA Interview</Title>
