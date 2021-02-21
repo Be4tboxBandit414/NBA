@@ -15,7 +15,6 @@ const Search = () => {
 			.then(res => res.json())
 			.then(data => {
 				dispatch(fetchFilteredPlayers(data))
-				console.log(filteredData)
 			})
 		}
 	}

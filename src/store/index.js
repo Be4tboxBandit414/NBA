@@ -48,7 +48,7 @@ const initialState = {
 
 // Paginated Players Reducer
 
-const getPlayers =(state = [], action) => {
+const getPlayers = (state = [], action) => {
     switch(action.type) {
         case 'FETCH_PLAYERS_DATA':
             return [...action.payload]
